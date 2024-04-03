@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import inquirer from "inquirer";
 let todos = [];
 let condition = true;
@@ -18,21 +19,45 @@ while (condition) {
     console.log(todos);
     condition = task.addMore;
 }
-const remove = await inquirer.prompt([{
-        type: "confirm",
-        name: "toRemove",
-        message: "Do you wanna remove tasks from list"
+console.log("\n");
+const otherMethods = await inquirer.prompt([{
+        type: "list",
+        name: "methods",
+        message: "Do you wanna perform other tasks",
+        choices: ["Delete", "Read_Todo_list", "Update_task"]
     }]);
-if (remove.toRemove == true) {
+if (otherMethods.methods === "Delete") {
+    console.log("\n");
     const index = await inquirer.prompt({
         type: "number",
         name: "taskIndex",
-        message: "Give the index number of the task you wanna REMOVE:"
+        message: "Give the index number of the task you wanna DELETE:"
     });
     let removed = todos.splice(index.taskIndex, 1);
-    console.log(`${removed} is been removed from the list, NEW list is ${todos}`);
+    console.log(`\n"${removed}" is been removed from the list, NEW list is [ ${todos} ]`);
 }
-// if(remove.toRemove == true) {
-//     let removedTask =todos.pop()
-//     console.log(`${removedTask} is been removed, New list is ${todos}`)
-// }
+else if (otherMethods.methods === "Read_Todo_list") {
+    console.log("\n");
+    todos.forEach(elem => console.log(elem));
+}
+else if (otherMethods.methods === "Update_task") {
+    console.log("\n");
+    const index = await inquirer.prompt([{
+            type: "number",
+            name: "taskNumToUpdate",
+            message: "Give the index number of the task you wanna Update:"
+        },
+        {
+            type: "input",
+            name: "updatedTask",
+            message: "Enter the updated Task"
+        }
+    ]);
+    todos.splice(index.taskNumToUpdate, 1);
+    todos.splice(index.taskNumToUpdate, 0, index.updatedTask);
+    console.log(`\nThe new list is:`);
+    todos.forEach(e => console.log(e));
+}
+else {
+    console.log("This task is not listed in app");
+}
